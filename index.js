@@ -99,7 +99,7 @@ const rules = {
 		},
 		html: (node, output, state) => {
 			const codeHtml = escapeHtml(node.content);
-			return htmlTag("pre", htmlTag("code", codeHtml, null, state), null, state);
+			return htmlTag("pre", codeHtml, null, state);
 		},
 	}),
 	newline: markdown.defaultRules.newline,
