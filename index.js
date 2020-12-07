@@ -16,15 +16,16 @@ function htmlTag(tagName, content, attributes, isClosed = true, state = {}) {
 	let attributeString = "";
 	for (let attr in attributes) {
 		if (Object.prototype.hasOwnProperty.call(attributes, attr) && attributes[attr]) {
-			attributeString += ` ${markdown.sanitizeText(attr)}="${markdown.sanitizeText(attributes[attr])}"`;
+			attributeString += ` ${ markdown.sanitizeText(attr) }="${ markdown.sanitizeText(attributes[attr]) }"`;
 		}
 	}
-	let unclosedTag = `<${tagName}${attributeString}>`;
+	let unclosedTag = `<${ tagName }${ attributeString }>`;
 	if (isClosed) {
-		return unclosedTag + content + `</${tagName}>`;
+		return unclosedTag + content + `</${ tagName }>`;
 	}
 	return unclosedTag;
 }
+
 markdown.htmlTag = htmlTag;
 
 function htmlSlackTag(content, attributes, state) {
@@ -116,10 +117,10 @@ const rules = {
 			};
 		},
 		html: (node, output, state) => {
-			return htmlTag("a", output(node.content, state), { href: markdown.sanitizeUrl(node.target) }, state);
+			return htmlTag("a", output(node.content, state), {href: markdown.sanitizeUrl(node.target)}, state);
 		},
 	}),
-	url: Object.assign({ }, markdown.defaultRules.url, {
+	url: Object.assign({}, markdown.defaultRules.url, {
 		parse: (capture) => {
 			return {
 				content: [{
@@ -130,7 +131,7 @@ const rules = {
 			}
 		},
 		html: (node, output, state) => {
-			return htmlTag("a", output(node.content, state), { href: markdown.sanitizeUrl(node.target) }, state);
+			return htmlTag("a", output(node.content, state), {href: markdown.sanitizeUrl(node.target)}, state);
 		},
 	}),
 	noem: {
@@ -162,7 +163,7 @@ const rules = {
 		match: markdown.inlineRegex(/^~(\S(?:\\[\s\S]|[^\\])*?\S|\S)~(?!~)/),
 	}),
 	inlineCode: markdown.defaultRules.inlineCode,
-	br: Object.assign({ }, markdown.defaultRules.br, {
+	br: Object.assign({}, markdown.defaultRules.br, {
 		match: markdown.anyScopeRegex(/^\n/),
 	}),
 };
@@ -193,7 +194,7 @@ const rulesSlack = {
 				id: node.id,
 				name: node.content ? output(node.content, state) : "",
 			};
-			return htmlSlackTag(state.slackCallbacks.user(newNode), { class: "s-mention s-user" }, state);
+			return htmlSlackTag(state.slackCallbacks.user(newNode), {class: "s-mention s-user"}, state);
 		},
 	},
 	slackChannel: {
@@ -211,7 +212,7 @@ const rulesSlack = {
 				id: node.id,
 				name: node.content ? output(node.content, state) : "",
 			};
-			return htmlSlackTag(state.slackCallbacks.channel(newNode), { class: "s-mention s-channel" }, state);
+			return htmlSlackTag(state.slackCallbacks.channel(newNode), {class: "s-mention s-channel"}, state);
 		},
 	},
 	slackUserGroup: {
@@ -229,7 +230,7 @@ const rulesSlack = {
 				id: node.id,
 				name: node.content ? output(node.content, state) : "",
 			};
-			return htmlSlackTag(state.slackCallbacks.usergroup(newNode), { class: "s-mention s-usergroup" }, state);
+			return htmlSlackTag(state.slackCallbacks.usergroup(newNode), {class: "s-mention s-usergroup"}, state);
 		},
 	},
 	slackAtHere: {
@@ -245,7 +246,7 @@ const rulesSlack = {
 			const newNode = {
 				name: node.content ? output(node.content, state) : "",
 			};
-			return htmlSlackTag(state.slackCallbacks.atHere(newNode), { class: "s-mention s-at-here" }, state);
+			return htmlSlackTag(state.slackCallbacks.atHere(newNode), {class: "s-mention s-at-here"}, state);
 		},
 	},
 	slackAtChannel: {
@@ -261,7 +262,7 @@ const rulesSlack = {
 			const newNode = {
 				name: node.content ? output(node.content, state) : "",
 			};
-			return htmlSlackTag(state.slackCallbacks.atChannel(newNode), { class: "s-mention s-at-channel" }, state);
+			return htmlSlackTag(state.slackCallbacks.atChannel(newNode), {class: "s-mention s-at-channel"}, state);
 		},
 	},
 	slackAtEveryone: {
@@ -277,7 +278,7 @@ const rulesSlack = {
 			const newNode = {
 				name: node.content ? output(node.content, state) : "",
 			};
-			return htmlSlackTag(state.slackCallbacks.atEveryone(newNode), { class: "s-mention s-at-everyone" }, state);
+			return htmlSlackTag(state.slackCallbacks.atEveryone(newNode), {class: "s-mention s-at-everyone"}, state);
 		},
 	},
 	slackDate: {
@@ -302,7 +303,7 @@ const rulesSlack = {
 				link: node.link,
 				fallback: node.content ? output(node.content, state) : "",
 			};
-			return htmlSlackTag(state.slackCallbacks.date(newNode), { class: "s-mention s-date" }, state);
+			return htmlSlackTag(state.slackCallbacks.date(newNode), {class: "s-mention s-date"}, state);
 		},
 	}
 };
@@ -345,4 +346,7 @@ function toHTML(source, opts) {
 
 module.exports = {
 	toHTML,
+};
+window.slackMarkdown = {
+	toHTML
 };
